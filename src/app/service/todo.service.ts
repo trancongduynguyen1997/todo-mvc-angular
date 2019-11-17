@@ -22,7 +22,7 @@ export class TodoService {
   constructor(private storageService: LocalStorageService) { }
 
   fetchFromLocalStorage() {
-    this.todos = this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey);
+    this.todos = this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey) || [];
     this.filteredTodos = [...this.todos.map(todo => ({ ...todo }))];
     this.updateTodosData();
   }
@@ -46,11 +46,29 @@ export class TodoService {
         this.filteredTodos = [...this.todos];
         break;
     }
+    if (isFiltering) {
+      this.updateTodosData();
+    }
   }
 
   private updateTodosData() {
     this.displayTodosSubject.next(this.filteredTodos);
     this.lengthSubject.next(this.todos.length);
   }
+
+  addTodo(content: string) {
+    const timestamp = new Date().getTime();
+    const newTodo = new Todo(timestamp, content, false);
+    this.todos.unshift(newTodo);
+    this.updateToLocalStorage();
+  }
+
+changeTodoStatus(todoId: number, isCompleted: boolean) {
+  const index = this.todos.findIndex(todo => todo.id === todoId);
+  const todo = this.todos[index];
+  todo.isCompleted = isCompleted;
+  this.todos.splice(index, 1, todo);
+  this.updateToLocalStorage();
+}
 
 }
