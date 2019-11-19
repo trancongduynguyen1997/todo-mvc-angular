@@ -23,7 +23,7 @@ export class TodoService {
 
   fetchFromLocalStorage() {
     this.todos = this.storageService.getValue<Todo[]>(TodoService.TodoStorageKey) || [];
-    this.filteredTodos = [...this.todos.map(todo => ({ ...todo }))];
+    this.filteredTodos = [...this.todos];
     this.updateTodosData();
   }
 
@@ -63,12 +63,52 @@ export class TodoService {
     this.updateToLocalStorage();
   }
 
-changeTodoStatus(todoId: number, isCompleted: boolean) {
-  const index = this.todos.findIndex(todo => todo.id === todoId);
-  const todo = this.todos[index];
-  todo.isCompleted = isCompleted;
-  this.todos.splice(index, 1, todo);
-  this.updateToLocalStorage();
-}
+  changeTodoStatus(todoId: number, isCompleted: boolean) {
+    const index = this.todos.findIndex(todo => todo.id === todoId);
+    const todo = this.todos[index];
+    todo.isCompleted = isCompleted;
+    this.todos.splice(index, 1, todo);
+    this.updateToLocalStorage();
+  }
+
+  editTodo(todoId: number, content: string) {
+    const index = this.todos.findIndex(todo => todo.id === todoId);
+    const todo = this.todos[index];
+    todo.content = content;
+    this.todos.splice(index, 1, todo);
+    this.updateToLocalStorage();
+  }
+
+  deleteTodo(todoId: number) {
+    const index = this.todos.findIndex(todo => todo.id === todoId);
+    this.todos.splice(index, 1);
+    this.updateToLocalStorage();
+  }
+
+  toggleAll(isToggleAll: boolean) {
+    // if (isToggleAll) {
+    //   const toggleTodos = this.todos.map(todo => {
+    //     const newtodo = { ...todo, isCompleted: true };
+    //     return newtodo;
+    //   });
+    //   this.todos = [...toggleTodos];
+    // }
+    // else {
+    //   const toggleTodos = this.todos.map(todo => {
+    //     const newtodo = { ...todo, isCompleted: false };
+    //     return newtodo;
+    //   });
+    //   this.todos = [...toggleTodos];
+    // }
+
+    this.todos = this.todos.map(todo => {
+      return {
+        ...todo,
+        isCompleted: !this.todos.every(t => t.isCompleted)
+      }
+    });
+
+    this.updateToLocalStorage();
+  }
 
 }
