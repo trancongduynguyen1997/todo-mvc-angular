@@ -25,15 +25,15 @@
     background: white;
     border: 1px solid white;
 
-    &:hover,
-    &.active {
-      border-color: burlywood;
-    }
+    // &:hover,
+    // &.active {
+    //   border-color: burlywood;
+    // }
   }
 
   & .clear-completed-btn {
     // TODO: Change to hidden when implement completed todos
-    visibility: visible;
+    visibility: hidden;
 
     &.visible {
       visibility: visible;
